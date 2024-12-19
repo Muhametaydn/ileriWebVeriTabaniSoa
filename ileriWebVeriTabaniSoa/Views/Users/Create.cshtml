@@ -1,0 +1,19 @@
+﻿@model ileriWebVeriTabaniSoa.Models.User
+
+<h2>Yeni Kullanıcı Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <label>Kullanıcı Adı:</label>
+    <input asp-for="Username" />
+    <br />
+    <label>E-posta:</label>
+    <input asp-for="Email" />
+    <br />
+    <label>Şifre:</label>
+    <input asp-for="Password" type="password" />
+    <br />
+    <label>Rol:</label>
+    <input asp-for="Role" />
+    <br />
+    <button type="submit">Kaydet</button>
+</form>

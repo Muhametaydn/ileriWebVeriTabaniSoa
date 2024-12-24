@@ -1,5 +1,7 @@
-using ileriWebVeriTabaniSoa.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ileriWebVeriTabaniSoa.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,15 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // Güvenlik için sadece HTTP eriþimine izin ver
     options.Cookie.IsEssential = true; // GDPR uyumu için gerekli iþaretleme
 });
+
+// Add Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";  // Giriþ sayfasý
+        options.LogoutPath = "/Account/Logout"; // Çýkýþ sayfasý
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Eriþim reddedildi sayfasý
+    });
 
 var app = builder.Build();
 
@@ -34,6 +45,8 @@ app.UseRouting();
 // Use session middleware
 app.UseSession();
 
+// Use authentication and authorization
+app.UseAuthentication(); // Authentication middleware
 app.UseAuthorization();
 
 app.MapControllerRoute(

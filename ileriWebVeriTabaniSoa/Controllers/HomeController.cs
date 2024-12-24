@@ -15,6 +15,13 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
         public IActionResult Index()
         {
+            //burada login olmussa consolda bilgileri yazdiriyor guvenlik icin sonda sil
+            var userId = HttpContext.Session.GetString("UserId");
+            var username = HttpContext.Session.GetString("Username");
+            var role = HttpContext.Session.GetString("Role");
+
+            // Eðer kullanýcý giriþi yapýlmýþsa, bilgileri gösterin.
+            Console.WriteLine($"Oturum Bilgisi: UserId={userId}, Username={username}, Role={role}");
             return View();
         }
 
@@ -22,7 +29,14 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             return View();
         }
-
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

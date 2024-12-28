@@ -1,28 +1,46 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using ileriWebVeriTabaniSoa.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using ileriWebVeriTabaniSoa.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace ileriWebVeriTabaniSoa.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //burada login olmussa consolda bilgileri yazdiriyor guvenlik icin sonda sil
-            var userId = HttpContext.Session.GetString("UserId");
-            var username = HttpContext.Session.GetString("Username");
-            var role = HttpContext.Session.GetString("Role");
 
-            // Eðer kullanýcý giriþi yapýlmýþsa, bilgileri gösterin.
-            Console.WriteLine($"Oturum Bilgisi: UserId={userId}, Username={username}, Role={role}");
-            return View();
+
+
+
+
+            var posts = _context.Posts.Include(x=>x.Category).ToList(); // Veritabanýndan tüm verileri alýr
+            if (User.Identity.IsAuthenticated)
+            {
+                var username = User.Identity.Name;
+                var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+                var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                Console.WriteLine($"Oturum Bilgisi: Username={username}, Email={email}, Role={role}");
+            }
+            else
+            {
+                Console.WriteLine("Kullanýcý giriþ yapmamýþ.");
+            }
+
+            return View(posts);
         }
 
         public IActionResult Privacy()
@@ -37,6 +55,21 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             return View();
         }
+        // Eriþim reddedildiðinde yönlendirilir
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        public IActionResult CreatePost()
+        {
+            return View();
+        }
+        public IActionResult GetCategory()
+        {
+            return View();
+        }
+       
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="access-denied-container">
+    <h1>Yetki Yok</h1>
+    <p>Bu sayfaya erişim yetkiniz bulunmamaktadır.</p>
+    <p>Eğer bunun bir hata olduğunu düşünüyorsanız, lütfen yöneticinizle iletişime geçin.</p>
+
+    <!-- Butonu yazıların altına koyduk -->
+    <a href="/" class="home-button">
+        <i class="fas fa-home"></i> Anasayfaya Git
+    </a>
+</div>
+
+<style>
+    .access-denied-container {
+        text-align: center;
+        padding: 20px;
+        margin-top: 100px;
+    }
+
+    .home-button {
+        display: inline-block; /* Butonu yazıların altına yerleştirmek için */
+        margin-top: 20px; /* Yazılardan biraz boşluk bırakmak için */
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+</style>

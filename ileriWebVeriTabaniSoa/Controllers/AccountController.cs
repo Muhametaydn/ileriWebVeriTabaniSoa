@@ -38,6 +38,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
             if (_context.Users.Any(u => u.Email == user.Email))
             {
                 ModelState.AddModelError("Email", "Bu e-posta adresi zaten kullanılıyor.");
+                Console.WriteLine("Email", "Bu e-posta adresi zaten kullanılıyor1.");
                 return View(user);
             }
 
@@ -61,59 +62,64 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             return View();
         }
+        //AccessDenied = Bu sayfada kullanıcıya bir hata mesajı gösterebilirsiniz: "Bu sayfaya erişim izniniz yok."
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
 
         // POST: Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            // Kullanıcıyı e-posta adresi ile bul
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
             if (user == null)
             {
                 ModelState.AddModelError("", "E-posta veya şifre yanlış.");
+                Console.Write("E-posta veya şifre yanlış.");
                 return View();
             }
 
-            // Şifreyi doğrula
-            var passwordHasher = new PasswordHasher<User>(); // User sınıfını kendi modelinize göre değiştirin
+            var passwordHasher = new PasswordHasher<User>();
             var result = passwordHasher.VerifyHashedPassword(user, user.Password, password);
 
             if (result == PasswordVerificationResult.Failed)
             {
                 ModelState.AddModelError("", "E-posta veya şifre yanlış.");
+                Console.Write("E-posta veya şifre yanlış.2");
                 return View();
             }
 
-            // Oturum açma işlemi
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-            };
+    {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role),
+    };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
-            // Kullanıcıyı authenticate et ve cookie'yi set et
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            Console.Write("giris tamamlandi");
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Account/Logout
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            // Kullanıcıyı çıkart ve cookie'yi temizle
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            Console.Write("cikis yapildi");
             return RedirectToAction("Login");
         }
+
+
 
         [Authorize]
         public IActionResult Dashboard()
         {
             //Giriş yaptıktan sonra, kullanıcıya belirli sayfalara erişim izni vermek için [Authorize] özniteliğini (attribute) kullanabilirsiniz. Bu, yalnızca kimliği doğrulanmış kullanıcıların erişebileceği sayfaları korur.
+            Console.WriteLine("bura ne alaka");
             return View();
         }
     }

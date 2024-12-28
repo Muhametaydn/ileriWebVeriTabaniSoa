@@ -1,18 +1,30 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ileriWebVeriTabaniSoa.Models
 {
     public class User
     {
         // User tablosundaki sütunları temsil eden özellikler
-        public int UserId { get; set; } // Benzersiz kullanıcı kimliği (Primary Key)
-        public string Username { get; set; } // Kullanıcı adı
-        public string Email { get; set; } // Kullanıcı e-posta adresi
-        public string Password { get; set; } // Şifre
-        public string Role { get; set; } // Kullanıcı rolü (Admin, User vb.)
-        public DateTime CreatedDate { get; set; } // Oluşturulma tarihi
+        public int UserId { get; set; }
+
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        // Password alanını yalnızca Create işlemi için zorunlu kılalım
+        [Required(ErrorMessage = "Password is required on Create only")]
+        public string Password { get; set; }
+
+        [Required]
+        public string Role { get; set; }
+
+        public DateTime CreatedDate { get; set; }
 
         // İlişkiler
         public ICollection<Post>? Posts { get; set; } // Kullanıcının gönderileri

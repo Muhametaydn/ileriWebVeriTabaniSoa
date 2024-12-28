@@ -1,0 +1,12 @@
+﻿@model List<Post>
+
+<ul class="navbar-nav">
+    @foreach (var post in Model)
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@Url.Action("CategorySelect", "Home", new { id = post.CategoryID })">
+                @post.Title
+            </a>
+        </li>
+    }
+</ul>

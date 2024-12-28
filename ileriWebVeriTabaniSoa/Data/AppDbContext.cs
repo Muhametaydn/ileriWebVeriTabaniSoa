@@ -17,6 +17,8 @@ namespace ileriWebVeriTabaniSoa.Data
         // sonradan eklediklerim
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
+
+
         public DbSet<Like> Likes { get; set; }
         // Model kurallarını burada tanımlayabilirsiniz
         protected override void OnModelCreating(ModelBuilder modelBuilder)

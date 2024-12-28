@@ -1,8 +1,21 @@
-﻿@{
+﻿@model List<Post>
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    
-   
+    <h1>Son Yazilar</h1>
+
+    @foreach (var post in Model)
+    {
+        <div>
+            <h2>@post.Title</h2>
+            <p>@post.Content</p>
+            <p>@post.Category.Name</p>
+        </div>
+        <hr />
+    }
+
+    <!-- Button to create a new post -->
+    <a href="@Url.Action("Create", "Posts")" class="btn btn-primary">Yeni Yazı Ekle</a>
 </div>

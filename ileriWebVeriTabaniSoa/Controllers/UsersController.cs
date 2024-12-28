@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
 using ileriWebVeriTabaniSoa.Models;
 using ileriWebVeriTabaniSoa.Helpers; // Helpers klasöründeki sınıfı dahil ediyoruz
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 namespace ileriWebVeriTabaniSoa.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly AppDbContext _context;
@@ -57,15 +59,15 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             if (_context.Users.Any(u => u.Email == user.Email))
             {
-                Console.WriteLine("bu espotaya girmediye  girdi");
                 ModelState.AddModelError("Email", "Bu e-posta adresi zaten kullanılıyor.");
-                return View(user); // Aynı formu hata mesajıyla birlikte geri döner.
+                return View(user);
             }
+
             if (ModelState.IsValid)
             {
-                Console.WriteLine("ife girdi");
                 // Şifreyi hashle
-                user.Password = PasswordHasher.HashPassword(user.Password);
+                var passwordHasher = new PasswordHasher<User>();
+                user.Password = passwordHasher.HashPassword(user, user.Password);
 
                 // Kullanıcı oluşturulma tarihini UTC olarak ata
                 user.CreatedDate = DateTime.UtcNow;
@@ -75,52 +77,77 @@ namespace ileriWebVeriTabaniSoa.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Console.WriteLine("crate oldu");
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine(error.ErrorMessage);
-            }
             return View(user);
         }
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            Console.WriteLine("asdasd111");
             if (id == null)
             {
+                Console.WriteLine("idnull");
                 return NotFound();
             }
 
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
+                Console.WriteLine("usernull");
                 return NotFound();
             }
+
+            // Şifreyi ve CreatedDate'yi formda göstermiyoruz
             return View(user);
         }
+
 
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserId,Username,Email,Password,Role,CreatedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserId,Username,Email,Role")] UserEditDTO user)
         {
+            Console.WriteLine("edite girdi.");
             if (id != user.UserId)
             {
+                Console.WriteLine("userid Null");
                 return NotFound();
             }
 
+            Console.WriteLine("xxxxxx");
+            Console.WriteLine(ModelState.IsValid);
             if (ModelState.IsValid)
             {
+                Console.WriteLine("modelstate valide girdi.");
                 try
                 {
-                    // Şifre hashleme (şifre boş değilse güncelleniyor)
-                    if (!string.IsNullOrEmpty(user.Password))
+                    // Veri tabanından mevcut kullanıcıyı getir
+                    var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+                    if (existingUser == null)
                     {
-                        user.Password = PasswordHasher.HashPassword(user.Password);
+                        Console.WriteLine("kullaniciyi getir");
+                        return NotFound();
                     }
 
-                    _context.Update(user);
+                    // Kullanıcının şifresini değiştirme
+                    existingUser.Password = existingUser.Password;  // Eski şifreyi koruyun
+
+                    // Kullanıcı adı ve diğer bilgileri güncelle
+                    existingUser.Username = user.Username;
+                    existingUser.Email = user.Email;
+                    existingUser.Role = user.Role;
+
+                    // CreatedDate'yi değiştirmiyoruz
+                    existingUser.CreatedDate = existingUser.CreatedDate;
+
+                    // Entity Framework'e değişikliğin olduğunu bildir
+                    _context.Entry(existingUser).State = EntityState.Modified;
+
+                    // Değişiklikleri kaydet
                     await _context.SaveChangesAsync();
+
+                    Console.WriteLine("Kullanıcı başarıyla güncellendi.");
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -133,10 +160,27 @@ namespace ileriWebVeriTabaniSoa.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
+            // Eğer ModelState geçerli değilse, hatayı formda göster
+            Console.WriteLine("ModelState geçerli değil!");
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"Hata: {error.ErrorMessage}");
+            }
+
             return View(user);
         }
+
+
+
+
+
+
+
+
+
+
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)

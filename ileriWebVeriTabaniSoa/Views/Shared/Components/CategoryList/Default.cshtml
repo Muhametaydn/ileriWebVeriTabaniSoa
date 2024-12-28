@@ -1,0 +1,21 @@
+﻿@model List<Category>
+
+<ul class="list-unstyled">
+    
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown05" id="categoryDropdown">
+                <!-- Dinamik kategoriler -->
+                @{
+                    
+                    
+                        foreach (var category in Model)
+                        {
+                    <a class="dropdown-item" asp-action="categoryselect" asp-controller="categories" asp-route-categoryID="@category.CategoryID">@category.Name</a>
+                        }
+                   
+                }
+            </div>
+        </li>
+    
+</ul>

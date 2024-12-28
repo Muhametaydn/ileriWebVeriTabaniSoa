@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
 using ileriWebVeriTabaniSoa.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ileriWebVeriTabaniSoa.Controllers
 {
+    [Authorize(Roles = "Admin,Writer")]
     public class PostsController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,8 +21,18 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             _context = context;
         }
+        [Route("[controller]")]
+        public class PostController : Controller
+        {
 
+            [HttpGet]
+            public IActionResult Index()
+            {
+                return View();
+            }
+        }
         // GET: Posts
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Posts.Include(p => p.User);
@@ -27,6 +40,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Posts/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,30 +60,75 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Posts/Create
-        public IActionResult Create()
+        [Authorize(Roles = "Admin,Writer")]
+        public async Task<IActionResult> Create()
         {
+
+            Console.WriteLine("buney");
+
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email");
+            var categories = await _context.Categories.ToListAsync();  // Kategorileri veritabanından alıyoruz
+            ViewBag.categories = new SelectList(categories, "CategoryID", "Name");  // Kategorileri ViewBag'e atıyoruz
             return View();
         }
 
         // POST: Posts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Writer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,UserId,Category")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,Content,UserId,CategoryID")] Post post)
         {
+
+            // Kullanıcının Email veya başka bir kimlik bilgisi üzerinden ID'sini alın
+            var currentUser = HttpContext.User;
+
+            var name = currentUser.Identity.Name;
+
+
+            var user=_context.Users.Where(x => x.Username == name).FirstOrDefault();
+
+
+
+             // Kategori kontrolü
+             var isValidCategory = _context.Categories.Any(c => c.CategoryID == post.CategoryID);
+            if (!isValidCategory)
+            {
+                Console.WriteLine("Geçersiz kategori seçimi.");
+                return BadRequest("Geçersiz kategori seçimi.");
+            }
+
             if (ModelState.IsValid)
             {
+                // Kullanıcıyı ve kategoriyi atıyoruz
+                // Alınan kullanıcı ID'sini atıyoruz
+                post.UserId = user.UserId;
+
+                // Postu veritabanına ekliyoruz
                 _context.Add(post);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index", "Home"); // Ana sayfaya yönlendiriyoruz
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", post.UserId);
+            if (!ModelState.IsValid)
+            {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        Console.WriteLine("xxxxxxxx");
+                        Console.WriteLine(error.ErrorMessage);
+                    }
+                }
+            }
+
+            // Hata durumunda kategorileri geri döndürüyoruz
+            //ViewData["UserId"] = userId;
             return View(post);
         }
 
+
         // GET: Posts/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,6 +148,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         // POST: Posts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,UserId,Category")] Post post)
@@ -121,7 +181,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
             ViewData["UserId"] = new SelectList(_context.Users, "UserId", "Email", post.UserId);
             return View(post);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -140,7 +200,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
             return View(post);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

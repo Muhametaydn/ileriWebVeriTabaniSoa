@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
 using ileriWebVeriTabaniSoa.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ileriWebVeriTabaniSoa.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly AppDbContext _context;
@@ -56,13 +58,23 @@ namespace ileriWebVeriTabaniSoa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryID,Name")] Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
+                return View(category);
+            }
             if (ModelState.IsValid)
             {
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
+
         }
 
         // GET: Categories/Edit/5
@@ -148,7 +160,35 @@ namespace ileriWebVeriTabaniSoa.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        // Kategorileri herkes görebilsin
+        [AllowAnonymous] // Bu, kategorilere genel erişim sağlar
+        public async Task<IActionResult> GetCategory()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            if (categories == null || categories.Count == 0)
+            {
+                Console.WriteLine("No categories found in the database.");
+            }
+            else
+            {
+                Console.WriteLine($"Found {categories.Count} categories.");
+            }
 
+            ViewData["Categories"] = categories;
+
+            return View();
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> CategorySelect(int id)
+        {
+            // Veritabanından seçilen kategoriye ait postları almak
+            var posts = await _context.Posts
+                                      .Where(p => p.CategoryID == id)
+                                      .ToListAsync();
+
+            // Kategorilere göre filtrelenmiş postları view'e göndermek
+            return View(posts);
+        }
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.CategoryID == id);

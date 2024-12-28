@@ -10,14 +10,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add session services
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Oturumun zaman aþýmý süresi
-    options.Cookie.HttpOnly = true; // Güvenlik için sadece HTTP eriþimine izin ver
-    options.Cookie.IsEssential = true; // GDPR uyumu için gerekli iþaretleme
-});
 
 // Add Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -26,6 +18,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";  // Giriþ sayfasý
         options.LogoutPath = "/Account/Logout"; // Çýkýþ sayfasý
         options.AccessDeniedPath = "/Account/AccessDenied"; // Eriþim reddedildi sayfasý
+        options.ExpireTimeSpan = TimeSpan.FromHours(1); // Cookie'nin geçerlilik süresi
+        options.SlidingExpiration = true; // Cookie süresini kullanýcý aktifken uzat
+        options.Cookie.HttpOnly = true; // Güvenlik için sadece HTTP eriþimine izin ver
+        options.Cookie.IsEssential = true; // GDPR uyumu için gerekli iþaretleme
     });
 
 var app = builder.Build();
@@ -41,9 +37,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-// Use session middleware
-app.UseSession();
 
 // Use authentication and authorization
 app.UseAuthentication(); // Authentication middleware

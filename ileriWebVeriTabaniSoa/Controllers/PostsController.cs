@@ -181,8 +181,9 @@ namespace ileriWebVeriTabaniSoa.Controllers
             if (id == null)
             {
                 return NotFound();
-            }
 
+            }
+            
             var post = await _context.Posts
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);

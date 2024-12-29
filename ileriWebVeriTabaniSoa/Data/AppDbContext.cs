@@ -34,38 +34,47 @@ namespace ileriWebVeriTabaniSoa.Data
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            
-
-            base.OnModelCreating(modelBuilder);
+            // User ile Post arasındaki ilişki
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Posts)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Kullanıcı silindiğinde postları da sil
 
             // Post ile Category arasındaki ilişki
             modelBuilder.Entity<Post>()
-                .HasOne(p => p.Category) // Bir Post'un bir Category'si var
-                .WithMany(c => c.Posts)  // Bir Category'nin birden fazla Post'u var
-                .HasForeignKey(p => p.CategoryID) // Foreign key: Post.CategoryID
-                .OnDelete(DeleteBehavior.Cascade); // Silme davranışı: Category silinirse, ilgili Post'lar da silinir.
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Posts)
+                .HasForeignKey(p => p.CategoryID)
+                .OnDelete(DeleteBehavior.SetNull); // Kategori silindiğinde Post'un CategoryID'si null olur
 
-            // Comment tablosu ilişkileri
+            // Post ile Comment arasındaki ilişki
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Post)
                 .WithMany(p => p.Comments)
-                .HasForeignKey(c => c.PostID);
+                .HasForeignKey(c => c.PostID)
+                .OnDelete(DeleteBehavior.Cascade); // Post silindiğinde yorumlar da silinir
 
+            // User ile Comment arasındaki ilişki
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Comments)
-                .HasForeignKey(c => c.UserID);
+                .HasForeignKey(c => c.UserID)
+                .OnDelete(DeleteBehavior.Cascade); // Kullanıcı silindiğinde yorumlar da silinir
 
-            // Like tablosu ilişkileri
+            // Post ile Like arasındaki ilişki
             modelBuilder.Entity<Like>()
                 .HasOne(l => l.Post)
                 .WithMany(p => p.Likes)
-                .HasForeignKey(l => l.PostID);
+                .HasForeignKey(l => l.PostID)
+                .OnDelete(DeleteBehavior.Cascade); // Post silindiğinde beğeniler de silinir
 
+            // User ile Like arasındaki ilişki
             modelBuilder.Entity<Like>()
                 .HasOne(l => l.User)
                 .WithMany(u => u.Likes)
-                .HasForeignKey(l => l.UserID);
+                .HasForeignKey(l => l.UserID)
+                .OnDelete(DeleteBehavior.Cascade); // Kullanıcı silindiğinde beğeniler de silinir
         }
     }
 }

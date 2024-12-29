@@ -1,4 +1,4 @@
-﻿@model List<Post>
+﻿@model List<ileriWebVeriTabaniSoa.Models.Post>
 
 <div class="container mt-4">
     <h2>Seçilen Kategoriye Ait Postlar</h2>
@@ -8,7 +8,10 @@
             @foreach (var post in Model)
             {
                 <li class="list-group-item">
-                    <h5>@post.Title</h5>
+                    <h5>
+                        <!-- Gönderi başlığını tıklanabilir bir bağlantı haline getiriyoruz -->
+                        <a href="@Url.Action("Details", "Posts", new { id = post.Id })">@post.Title</a>
+                    </h5>
                     <p>@post.Content</p>
                 </li>
             }

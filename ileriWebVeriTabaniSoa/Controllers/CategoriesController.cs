@@ -151,9 +151,16 @@ namespace ileriWebVeriTabaniSoa.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .Include(c => c.Posts) // İlgili postları da dahil et
+                .FirstOrDefaultAsync(m => m.CategoryID == id);
+
             if (category != null)
             {
+                // Kategoriye ait yazıları sil
+                _context.Posts.RemoveRange(category.Posts);
+
+                // Kategoriyi sil
                 _context.Categories.Remove(category);
             }
 

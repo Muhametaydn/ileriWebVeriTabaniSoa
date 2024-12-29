@@ -12,9 +12,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LikedDate)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.Post)
             </th>
@@ -27,9 +25,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LikedDate)
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.Post.Id)
             </td>

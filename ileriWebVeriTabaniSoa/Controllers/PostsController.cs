@@ -40,22 +40,15 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Posts/Details/5
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var post = await _context.Posts
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var post = _context.Posts.Include(p => p.Category)
+                                     .FirstOrDefault(p => p.Id == id);
             if (post == null)
             {
                 return NotFound();
             }
-
             return View(post);
         }
 

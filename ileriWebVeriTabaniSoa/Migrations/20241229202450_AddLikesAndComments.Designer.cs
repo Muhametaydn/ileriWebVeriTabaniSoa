@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ileriWebVeriTabaniSoa.Data;
@@ -11,9 +12,11 @@ using ileriWebVeriTabaniSoa.Data;
 namespace ileriWebVeriTabaniSoa.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241229202450_AddLikesAndComments")]
+    partial class AddLikesAndComments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,9 @@ namespace ileriWebVeriTabaniSoa.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("PostID")
                         .HasColumnType("integer");
 
@@ -74,6 +80,9 @@ namespace ileriWebVeriTabaniSoa.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LikeID"));
+
+                    b.Property<DateTime>("LikedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("PostID")
                         .HasColumnType("integer");

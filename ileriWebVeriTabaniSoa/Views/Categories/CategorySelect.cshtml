@@ -1,12 +1,21 @@
 ﻿@model List<Post>
 
-<ul class="navbar-nav">
-    @foreach (var post in Model)
+<div class="container mt-4">
+    <h2>Seçilen Kategoriye Ait Postlar</h2>
+    @if (Model.Any())
     {
-        <li class="nav-item">
-            <a class="nav-link" href="@Url.Action("CategorySelect", "Home", new { id = post.CategoryID })">
-                @post.Title
-            </a>
-        </li>
+        <ul class="list-group">
+            @foreach (var post in Model)
+            {
+                <li class="list-group-item">
+                    <h5>@post.Title</h5>
+                    <p>@post.Content</p>
+                </li>
+            }
+        </ul>
     }
-</ul>
+    else
+    {
+        <p>Bu kategoriye ait gönderi bulunamadı.</p>
+    }
+</div>

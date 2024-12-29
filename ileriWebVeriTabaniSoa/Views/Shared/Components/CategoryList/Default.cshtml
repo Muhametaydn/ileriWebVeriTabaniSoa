@@ -11,7 +11,7 @@
                     
                         foreach (var category in Model)
                         {
-                    <a class="dropdown-item" asp-action="categoryselect" asp-controller="categories" asp-route-categoryID="@category.CategoryID">@category.Name</a>
+                    <a class="dropdown-item" href="/Categories/categoryselect/@category.CategoryID">@category.Name</a>
                         }
                    
                 }

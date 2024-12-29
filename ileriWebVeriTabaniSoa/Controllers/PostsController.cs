@@ -43,7 +43,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         [AllowAnonymous]
         public IActionResult Details(int id)
         {
-            var post = _context.Posts.Include(p => p.Category)
+            var post = _context.Posts.Include(p => p.Category).Include(p => p.Comments).ThenInclude(p => p.User)
                                      .FirstOrDefault(p => p.Id == id);
             if (post == null)
             {

@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
 using ileriWebVeriTabaniSoa.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ileriWebVeriTabaniSoa.Controllers
 {
+    [Authorize(Roles = "Admin,Writer")]
     public class CommentsController : Controller
     {
+
         private readonly AppDbContext _context;
 
         public CommentsController(AppDbContext context)
@@ -20,6 +23,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Comments
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Comments.Include(c => c.Post).Include(c => c.User);
@@ -27,6 +31,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Comments/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,8 +50,8 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
             return View(comment);
         }
-
         // GET: Comments/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["PostID"] = new SelectList(_context.Posts, "Id", "Id");
@@ -55,24 +60,40 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // POST: Comments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CommentID,Content,PostID,UserID,CreatedDate")] Comment comment)
+        public async Task<IActionResult> Create([Bind("CommentID,Content,PostID,UserID")] Comment comment)
         {
-            if (ModelState.IsValid)
-            {
+            // Kullanıcının Email veya başka bir kimlik bilgisi üzerinden ID'sini alın
+            var currentUser = HttpContext.User;
+
+            var name = currentUser.Identity.Name;
+
+
+            var user = _context.Users.Where(x => x.Username == name).FirstOrDefault();
+            
+                Console.Write("modelstateCommente Create girdi");
+                // Yorum veritabanına ekleniyor
+                comment.UserID = user.UserId;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+                // Yorum eklenip kaydedildikten sonra aynı Post detay sayfasına yönlendir
+                return RedirectToAction("Details", "Posts", new { id = comment.PostID });
+            
+
+            // Model geçerli değilse, formu tekrar göster
             ViewData["PostID"] = new SelectList(_context.Posts, "Id", "Id", comment.PostID);
             ViewData["UserID"] = new SelectList(_context.Users, "UserId", "Email", comment.UserID);
-            return View(comment);
+            Console.Write("yorum yapildi");
+            return RedirectToAction("Index", "Home");
         }
 
+
+
         // GET: Comments/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -93,6 +114,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         // POST: Comments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CommentID,Content,PostID,UserID,CreatedDate")] Comment comment)
@@ -128,6 +150,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // GET: Comments/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,6 +171,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         }
 
         // POST: Comments/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

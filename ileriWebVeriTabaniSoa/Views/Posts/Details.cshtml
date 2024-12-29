@@ -22,7 +22,40 @@
         </dd>
     </dl>
 
-   
+    <h2>Yorumlar</h2>
+
+    @if (Model.Comments != null && Model.Comments.Any())
+    {
+        <!-- Mevcut yorumları listele -->
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <strong>@comment.User.Username</strong> : @comment.Content
+            </div>
+        }
+    }
+    else
+    {
+        <p>Yorum yok.</p>
+    }
+    
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Yorum ekleme formu kullanci giris yaptiysa gorunr -->
+        <form asp-controller="Comments" asp-action="Create" method="post">
+            <div class="form-group">
+                <label for="Content">Yorum:</label>
+                <textarea id="Content" name="Content" class="form-control" required></textarea>
+            </div>
+
+            <input type="hidden" name="PostID" value="@Model.Id" />
+
+            <button type="submit" class="btn btn-primary">Yorumu Gönder</button>
+        </form>
+    }
+  
+    
+
 
 
    

@@ -10,5 +10,6 @@
         // İlişkiler
         public Post Post { get; set; } // Beğenilen gönderi
         public User User { get; set; } // Beğeniyi yapan kullanıcı
+       
     }
 }

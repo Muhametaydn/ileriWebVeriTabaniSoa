@@ -21,6 +21,33 @@
             @Html.DisplayFor(model => model.Content)
         </dd>
     </dl>
+    @if (Model.Likes != null && Model.Likes.Any())
+    {
+        <!-- Mevcut beğeniler -->
+        <p>Bu postu <strong>@Model.Likes.Count()</strong> kişi beğendi.</p>
+    }
+    else
+    {
+        <p>Beğeni yok.</p>
+    }
+    <!-- Beğeni İşlemleri -->
+    <div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <!-- begeni ekleme formu kullanci giris yaptiysa gorunur -->
+            <form asp-controller="Likes" asp-action="Create" method="post">
+                <input type="hidden" name="PostID" value="@Model.Id" />
+                <button type="submit" class="btn btn-primary">Begen</button>
+            </form>
+
+            <!-- dislike ekleme formu -->
+            <form asp-controller="Likes" asp-action="LikeDelete" method="post">
+                <input type="hidden" name="PostID" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger">Dislike</button>
+            </form>
+        }
+    </div>
+</div>
 
     <h2>Yorumlar</h2>
 
@@ -53,9 +80,7 @@
             <button type="submit" class="btn btn-primary">Yorumu Gönder</button>
         </form>
     }
-  
-    
 
 
 
-   
+

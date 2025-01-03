@@ -6,6 +6,7 @@ using ileriWebVeriTabaniSoa.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ileriWebVeriTabaniSoa.Helpers;
 namespace ileriWebVeriTabaniSoa.Controllers
 {
     public class HomeController : Controller
@@ -68,7 +69,39 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             return View();
         }
-       
+        public IActionResult Search(string query)
+        {
+            // Girilen arama kelimesini TempData'ya aktar
+            TempData["SearchQuery"] = query;
+
+            // SearchResults view'ýna yönlendir
+            return RedirectToAction("SearchResults");
+        }
+
+        public IActionResult SearchResults()
+        {
+            string searchQuery = TempData["SearchQuery"] as string;
+
+            // Arama kelimesini normalize et
+            searchQuery = StringHelper.NormalizeTurkishCharacters(searchQuery).ToLower(); // Küçük harfe dönüþtür
+
+            // Veritabanýndan tüm postlarý çek
+            var posts = _context.Posts.ToList();
+
+            // Normalize edilmiþ ve küçük harfe dönüþtürülmüþ arama kelimesi ile arama yap
+            var filteredPosts = posts.Where(p =>
+                StringHelper.NormalizeTurkishCharacters(p.Title).ToLower().Contains(searchQuery) ||
+                StringHelper.NormalizeTurkishCharacters(p.Content).ToLower().Contains(searchQuery))
+            .ToList();
+
+            ViewBag.SearchQuery = searchQuery;
+
+            return View(filteredPosts);
+        }
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

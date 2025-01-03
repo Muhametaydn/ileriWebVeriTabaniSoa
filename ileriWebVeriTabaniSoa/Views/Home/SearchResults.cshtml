@@ -1,0 +1,29 @@
+﻿@model List<ileriWebVeriTabaniSoa.Models.Post>
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<h2>Search Results</h2>
+
+@if (ViewBag.SearchQuery != null)
+{
+    <p>You searched for: @ViewBag.SearchQuery</p>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    <ul>
+        @foreach (var post in Model)
+        {
+            <li>
+                <h3>@post.Title</h3>
+                <p>@post.Content</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No posts found for your search.</p>
+}

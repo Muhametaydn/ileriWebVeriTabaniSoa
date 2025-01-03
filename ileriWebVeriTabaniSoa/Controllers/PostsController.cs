@@ -43,7 +43,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
         [AllowAnonymous]
         public IActionResult Details(int id)
         {
-            var post = _context.Posts.Include(p => p.Category).Include(p => p.Comments).ThenInclude(p => p.User)
+            var post = _context.Posts.Include(p => p.Category).Include(p => p.Likes).Include(p => p.Comments).ThenInclude(p => p.User)
                                      .FirstOrDefault(p => p.Id == id);
             if (post == null)
             {
@@ -209,6 +209,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+       
 
         private bool PostExists(int id)
         {

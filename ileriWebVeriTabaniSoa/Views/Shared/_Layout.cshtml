@@ -34,6 +34,10 @@
                         @*         <input type="text" id="s" placeholder="Ara..."> *@
                         @*     </form> *@
                         @* </div> *@
+                        <form asp-action="Search" asp-controller="Home" method="get">
+                            <input type="text" name="query" placeholder="Search..." />
+                            <button type="submit">Search</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -64,11 +68,8 @@
                             </li>
                             @if (User.Identity.IsAuthenticated)
                             {
-                                <li class="nav-item">
-                                    <span class="navbar-text">
-                                        Hoş geldin, @User.Identity.Name!
-                                    </span>
-                                </li>
+                                //PartialView Kullanim
+                                @await Html.PartialAsync("~/Views/Partials/WelcomePartial.cshtml")
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Account" asp-action="Logout">Çıkış Yap</a>
                                 </li>
@@ -93,6 +94,8 @@
                                         <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Kullanıcı Yönetimi</a></li>
                                         <li><a class="dropdown-item" asp-controller="Posts" asp-action="Index">Gönderi Yönetimi</a></li>
                                         <li><a class="dropdown-item" asp-controller="Categories" asp-action="Index">Kategori Ayarlari</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Comments" asp-action="Index">Comments Yönetimi</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Likes" asp-action="Index">Likes Yönetimi</a></li>
                                     </ul>
                                 </li>
                             }

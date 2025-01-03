@@ -82,7 +82,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
                 // Yorum eklenip kaydedildikten sonra aynı Post detay sayfasına yönlendir
                 return RedirectToAction("Details", "Posts", new { id = comment.PostID });
             
-
+            //bundan sonrasi calismiyor
             // Model geçerli değilse, formu tekrar göster
             ViewData["PostID"] = new SelectList(_context.Posts, "Id", "Id", comment.PostID);
             ViewData["UserID"] = new SelectList(_context.Users, "UserId", "Email", comment.UserID);

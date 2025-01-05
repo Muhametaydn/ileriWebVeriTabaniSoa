@@ -17,7 +17,9 @@
         @foreach (var post in Model)
         {
             <li>
-                <h3>@post.Title</h3>
+                <h2>
+                    <a href="@Url.Action("Details", "Posts", new { id = post.Id })">@post.Title</a>
+                </h2>
                 <p>@post.Content</p>
             </li>
         }

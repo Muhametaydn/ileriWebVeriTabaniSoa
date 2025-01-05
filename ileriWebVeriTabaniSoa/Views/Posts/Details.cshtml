@@ -4,83 +4,79 @@
     ViewData["Title"] = "Details";
 }
 
-<div>
-    <h1>@Model.Title</h1>
+<div class="container my-5">
+    <!-- Başlık -->
+    <div class="text-center mb-4">
+        <h1>@Model.Title</h1>
+        <p>This post has been liked by <strong>@Model.Likes.Count()</strong> people.</p>
+    </div>
+
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-    </dl>
-    @if (Model.Likes != null && Model.Likes.Any())
-    {
-        <!-- Mevcut beğeniler -->
-        <p>Bu postu <strong>@Model.Likes.Count()</strong> kişi beğendi.</p>
-    }
-    else
-    {
-        <p>Beğeni yok.</p>
-    }
-    <!-- Beğeni İşlemleri -->
-    <div>
+
+    <!-- İçerik ve Beğeni -->
+    <div class="row">
+        <div class="col-md-8">
+            <!-- İçerik -->
+            <h4 class="mb-3">Content</h4>
+            <p>@Model.Content</p>
+        </div>
+        <div class="col-md-4">
+            <!-- Beğeni İşlemleri -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="mb-3">
+                    <form asp-controller="Likes" asp-action="Create" method="post" class="d-inline">
+                        <input type="hidden" name="PostID" value="@Model.Id" />
+                        <button type="submit" class="btn btn-success btn-sm w-100">Like</button>
+                    </form>
+                </div>
+                <div>
+                    <form asp-controller="Likes" asp-action="LikeDelete" method="post" class="d-inline">
+                        <input type="hidden" name="PostID" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm w-100">Dislike</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- Yorumlar -->
+    <div class="comments-section mt-5">
+        <h2>Comments</h2>
+
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            <ul class="list-group mb-4">
+                @foreach (var comment in Model.Comments)
+                {
+                    <li class="list-group-item">
+                        <strong>@comment.User.Username</strong> : @comment.Content
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="text-muted">No comments yet.</p>
+        }
+
+        <!-- Yorum Ekleme Formu -->
         @if (User.Identity.IsAuthenticated)
         {
-            <!-- begeni ekleme formu kullanci giris yaptiysa gorunur -->
-            <form asp-controller="Likes" asp-action="Create" method="post">
+            <form asp-controller="Comments" asp-action="Create" method="post" class="mt-4">
+                <div class="form-group mb-3">
+                    <label for="Content">Add a comment:</label>
+                    <textarea id="Content" name="Content" class="form-control" rows="3" placeholder="Write your comment here..." required></textarea>
+                </div>
                 <input type="hidden" name="PostID" value="@Model.Id" />
-                <button type="submit" class="btn btn-primary">Begen</button>
+                <button type="submit" class="btn btn-primary btn-sm">Send Comment</button>
             </form>
-
-            <!-- dislike ekleme formu -->
-            <form asp-controller="Likes" asp-action="LikeDelete" method="post">
-                <input type="hidden" name="PostID" value="@Model.Id" />
-                <button type="submit" class="btn btn-danger">Dislike</button>
-            </form>
+        }
+        else
+        {
+            <p class="text-muted">You must be logged in to leave a comment.</p>
         }
     </div>
 </div>
-
-    <h2>Yorumlar</h2>
-
-    @if (Model.Comments != null && Model.Comments.Any())
-    {
-        <!-- Mevcut yorumları listele -->
-        @foreach (var comment in Model.Comments)
-        {
-            <div class="comment">
-                <strong>@comment.User.Username</strong> : @comment.Content
-            </div>
-        }
-    }
-    else
-    {
-        <p>Yorum yok.</p>
-    }
-    
-    @if (User.Identity.IsAuthenticated)
-    {
-        <!-- Yorum ekleme formu kullanci giris yaptiysa gorunr -->
-        <form asp-controller="Comments" asp-action="Create" method="post">
-            <div class="form-group">
-                <label for="Content">Yorum:</label>
-                <textarea id="Content" name="Content" class="form-control" required></textarea>
-            </div>
-
-            <input type="hidden" name="PostID" value="@Model.Id" />
-
-            <button type="submit" class="btn btn-primary">Yorumu Gönder</button>
-        </form>
-    }
-
-
-
-

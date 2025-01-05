@@ -82,6 +82,13 @@ namespace ileriWebVeriTabaniSoa.Controllers
         {
             string searchQuery = TempData["SearchQuery"] as string;
 
+            // Arama kelimesi boþsa tüm postlarý göster
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                ViewBag.SearchQuery = string.Empty;
+                return View(_context.Posts.ToList());
+            }
+
             // Arama kelimesini normalize et
             searchQuery = StringHelper.NormalizeTurkishCharacters(searchQuery).ToLower(); // Küçük harfe dönüþtür
 
@@ -98,6 +105,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
             return View(filteredPosts);
         }
+
 
 
 

@@ -1,7 +1,7 @@
 ﻿@model List<ileriWebVeriTabaniSoa.Models.Post>
 
 <div class="container mt-4">
-    <h2>Seçilen Kategoriye Ait Postlar</h2>
+    <h2>Posts in Selected Category</h2>
     @if (Model.Any())
     {
         <ul class="list-group">
@@ -19,6 +19,6 @@
     }
     else
     {
-        <p>Bu kategoriye ait gönderi bulunamadı.</p>
+        <p>No posts found for this category.</p>
     }
 </div>

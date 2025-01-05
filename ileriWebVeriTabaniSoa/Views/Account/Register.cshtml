@@ -4,26 +4,34 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>Kayıt Ol</h1>
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Register</h2>
 
-<form asp-controller="account" asp-action="Register" method="post">
-    <div class="form-group">
-        <label asp-for="Username" class="control-label"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <form asp-controller="account" asp-action="Register" method="post" novalidate>
+            <div class="form-group mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email address" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="/Account/Login" class="text-decoration-none">Already have an account? Sign in</a>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" type="email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Password" class="control-label"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Kayıt Ol</button>
-</form>
+</div>
 
 @section Scripts {
     @{

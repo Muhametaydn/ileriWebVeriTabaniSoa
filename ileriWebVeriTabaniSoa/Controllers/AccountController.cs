@@ -37,8 +37,14 @@ namespace ileriWebVeriTabaniSoa.Controllers
             // E-posta kontrolü
             if (_context.Users.Any(u => u.Email == user.Email))
             {
-                ModelState.AddModelError("Email", "Bu e-posta adresi zaten kullanılıyor.");
-                Console.WriteLine("Email", "Bu e-posta adresi zaten kullanılıyor1.");
+                ModelState.AddModelError("Email", "This email address is already in use.");
+                return View(user);
+            }
+
+            // Kullanıcı adı kontrolü
+            if (_context.Users.Any(u => u.Username == user.Username))
+            {
+                ModelState.AddModelError("Username", "This username is already in use.");
                 return View(user);
             }
 
@@ -56,6 +62,7 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
             return RedirectToAction("Login", "Account"); // Başarılı kayıt sonrası Login sayfasına yönlendirin
         }
+
 
         // GET: Account/Login
         public IActionResult Login()
@@ -76,7 +83,8 @@ namespace ileriWebVeriTabaniSoa.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
             if (user == null)
             {
-                ModelState.AddModelError("", "E-posta veya şifre yanlış.");
+                ModelState.AddModelError("", "Email or password incorrect.");
+                ViewData["ErrorMessage"] = "Email or password incorrect!";
                 Console.Write("E-posta veya şifre yanlış.");
                 return View();
             }
@@ -86,7 +94,8 @@ namespace ileriWebVeriTabaniSoa.Controllers
 
             if (result == PasswordVerificationResult.Failed)
             {
-                ModelState.AddModelError("", "E-posta veya şifre yanlış.");
+                ModelState.AddModelError("", "Email or password incorrect.");
+                ViewData["ErrorMessage"] = "Email or password incorrect!";
                 Console.Write("E-posta veya şifre yanlış.2");
                 return View();
             }

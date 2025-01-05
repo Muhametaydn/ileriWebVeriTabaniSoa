@@ -1,45 +1,41 @@
 ﻿@model ileriWebVeriTabaniSoa.Models.Post
 
-<h1>Create</h1>
+<h1 class="text-center mb-4">Create Post</h1>
 
-<h4>Post</h4>
+<h4 class="text-center mb-3">Post</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <!-- Başlık alanı -->
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title" class="control-label">Title</label>
+                <input asp-for="Title" class="form-control" placeholder="Enter post title" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
             <!-- İçerik alanı -->
             <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <textarea asp-for="Content" class="form-control"></textarea>
+                <label asp-for="Content" class="control-label">Content</label>
+                <textarea asp-for="Content" class="form-control" placeholder="Enter post content"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
             <!-- Kategori alanı -->
             <div class="form-group">
                 <label for="CategoryID">Category Name</label>
-                <select asp-for="CategoryID" asp-items="ViewBag.categories" class="form-control">
-                    <option value="" disabled selected>Seçiniz</option>
+                <select asp-for="CategoryID" asp-items="ViewBag.categories" class="form-control" required>
+                    <option value="" disabled selected>Select a category</option>
                 </select>
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
 
             <!-- Submit Butonu -->
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group text-center">
+                <input type="submit" value="Create" class="btn btn-primary btn-lg" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>

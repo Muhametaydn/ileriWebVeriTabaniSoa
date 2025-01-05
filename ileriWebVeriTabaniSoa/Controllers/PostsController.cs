@@ -87,7 +87,8 @@ namespace ileriWebVeriTabaniSoa.Controllers
             if (!isValidCategory)
             {
                 Console.WriteLine("Geçersiz kategori seçimi.");
-                return BadRequest("Geçersiz kategori seçimi.");
+                ModelState.AddModelError("CategoryID", "Please select a category.");
+                return View(post);
             }
 
             if (ModelState.IsValid)

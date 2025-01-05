@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
 using ileriWebVeriTabaniSoa.Services;
 using ileriWebVeriTabaniSoa.Services.WeatherService;
+using ileriWebVeriTabaniSoa.Services.CurrencyService;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpClient<CurrencyService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -43,6 +44,7 @@ app.UseRouting();
 // Use authentication and authorization
 app.UseAuthentication(); // Authentication middleware
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

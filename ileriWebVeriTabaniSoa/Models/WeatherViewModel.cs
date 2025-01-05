@@ -1,8 +1,8 @@
 ﻿namespace ileriWebVeriTabaniSoa.Models
 {
-    public class WeatherModel
+    public class WeatherViewModel
     {
+        public double? Degree { get; set; }
         public string Description { get; set; }
-        public double? Degree { get; set; }  // Nullable yapıldı
     }
 }

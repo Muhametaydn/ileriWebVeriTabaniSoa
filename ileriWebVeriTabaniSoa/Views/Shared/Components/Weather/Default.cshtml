@@ -1,2 +1,5 @@
-﻿@ViewBag.degree
-@ViewBag.description
+﻿@model ileriWebVeriTabaniSoa.Models.WeatherViewModel
+<div>
+    <p>Turgutlu: @(Model.Degree.HasValue ? $"{Model.Degree.Value} °C" : "N/A") @Model.Description</p>
+    
+</div>

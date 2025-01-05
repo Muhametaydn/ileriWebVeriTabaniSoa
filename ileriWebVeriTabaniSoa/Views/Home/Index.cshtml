@@ -2,8 +2,58 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const city = "Turgutlu"; // Şehri buradan belirleyebilirsiniz
+        fetch('/Home/GetWeather', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ city: city })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return response.text().then(text => { throw new Error(text); });
+            }
+        })
+        .then(data => {
+            document.getElementById('weather-result').innerText = "Hava Durumu: " + JSON.stringify(data);
+            // Sayfa yenilenmeden önce yönlendirme yapılacak
+            setTimeout(function() {
+                window.location.href = '/Home/Index';
+            }, 1000); // 1 saniye sonra yönlendir
+        })
+        .catch(error => {
+            document.getElementById('weather-result').innerText = "Hata: " + error.message;
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // İlk kez ziyaret edildiğini kontrol et
+        if (!sessionStorage.getItem('firstVisit')) {
+            // Eğer ilk kez ziyaret ediliyorsa, 1 saniye sonra yönlendirme yap
+            setTimeout(function() {
+                window.location.href = '/Home/Index'; // Yönlendirme
+            }, 1000); // 1 saniye bekleme süresi
 
+            // İlk ziyaret olarak işaretle
+            sessionStorage.setItem('firstVisit', 'true');
+        }
+    });
+</script>
 <div class="text-center">
+    @await Component.InvokeAsync("Weather")
+
+    <p>The current exchange rate for 1 USD is: @ViewBag.DollarRate</p>
+    
+
+
+
+
     <h1>Posts</h1>
 
     <!-- Button to create a new post -->

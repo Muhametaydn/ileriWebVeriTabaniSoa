@@ -4,11 +4,9 @@ namespace ileriWebVeriTabaniSoa.Services
 {
     public interface IWeatherService
     {
-        public double? Degree { get; set; }
-        public string? Description {  get; set; }
+        double? Degree { get; }
+        string? Description { get; }
 
-        void update(WeatherModel weatherModel);
-
-
+        void Update(WeatherModel weatherModel);  // Güncelleme için sadece method kullanılmalı
     }
 }

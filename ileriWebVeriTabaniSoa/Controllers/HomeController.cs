@@ -7,24 +7,31 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ileriWebVeriTabaniSoa.Helpers;
+using System.Text;
+using System.Text.Json;
+using ileriWebVeriTabaniSoa.Services.CurrencyService;
+
 namespace ileriWebVeriTabaniSoa.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
-
-        public HomeController(ILogger<HomeController> logger, AppDbContext context)
+        private readonly CurrencyService _currencyService;
+        public HomeController(ILogger<HomeController> logger, AppDbContext context, CurrencyService currencyService)
         {
             _logger = logger;
             _context = context;
+            _currencyService = currencyService;
+           
         }
 
         public async Task<IActionResult> Index()
         {
 
 
-
+            var dollarRate = await _currencyService.GetDollarRateAsync();
+            ViewBag.DollarRate = dollarRate;
 
 
             var posts = _context.Posts.Include(x=>x.Category).ToList(); // Veritabanýndan tüm verileri alýr
@@ -106,7 +113,33 @@ namespace ileriWebVeriTabaniSoa.Controllers
             return View(filteredPosts);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetWeather([FromBody] String request)
+        {
+            var url = "http://localhost:4000/send-weather";
+            var payload = JsonSerializer.Serialize(new { city = request });
+            var client = new HttpClient();
+            var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
+            try
+            {
+                var response = await client.PostAsync(url, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+    
 
 
 

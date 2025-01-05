@@ -8,32 +8,33 @@ namespace ileriWebVeriTabaniSoa.Services.WeatherService
         private readonly IMemoryCache _memoryCache;
         private const string DegreeKey = "WeatherDegree";
         private const string DescriptionKey = "WeatherDescription";
+
         public WeatherService(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
         }
 
-        public double? Degree {
+        public double? Degree
+        {
             get
             {
                 _memoryCache.TryGetValue(DegreeKey, out double? degree);
                 return degree;
             }
-
-            set { }
         }
-        public string? Description {
+
+        public string? Description
+        {
             get
             {
                 _memoryCache.TryGetValue(DescriptionKey, out string? description);
                 return description;
             }
-
-            set { }
         }
 
-        public void update(WeatherModel weatherModel)
+        public void Update(WeatherModel weatherModel)
         {
+            // Veriyi cache'e kaydediyoruz
             _memoryCache.Set(DegreeKey, weatherModel.Degree);
             _memoryCache.Set(DescriptionKey, weatherModel.Description);
         }

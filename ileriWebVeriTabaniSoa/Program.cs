@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ileriWebVeriTabaniSoa.Data;
+using ileriWebVeriTabaniSoa.Services;
+using ileriWebVeriTabaniSoa.Services.WeatherService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 // Add Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

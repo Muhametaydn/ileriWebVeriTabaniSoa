@@ -1,9 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35514.174 d17.12
+VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ileriWebVeriTabaniSoa", "ileriWebVeriTabaniSoa\ileriWebVeriTabaniSoa.csproj", "{5B4E5664-F7DB-4801-9F80-75EA68EC96CC}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WCFService", "WCFService\", "{EDA6BA16-BBCB-4295-9C4F-BC22D8A10AE7}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_60448"
+		Debug.AspNetCompiler.PhysicalPath = "WCFService\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60448\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_60448"
+		Release.AspNetCompiler.PhysicalPath = "WCFService\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60448\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "60448"
+		SlnRelativePath = "WCFService\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +37,10 @@ Global
 		{5B4E5664-F7DB-4801-9F80-75EA68EC96CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B4E5664-F7DB-4801-9F80-75EA68EC96CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B4E5664-F7DB-4801-9F80-75EA68EC96CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA6BA16-BBCB-4295-9C4F-BC22D8A10AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA6BA16-BBCB-4295-9C4F-BC22D8A10AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA6BA16-BBCB-4295-9C4F-BC22D8A10AE7}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA6BA16-BBCB-4295-9C4F-BC22D8A10AE7}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
